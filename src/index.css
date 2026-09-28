@@ -1,11 +1,74 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* ───────────────────────────────────────────────────────────
+   Tokens de tema
+   Los colores viven como variables CSS en :root y se
+   sobreescriben en [data-theme='dark']. Los componentes nunca
+   nombran un gris directo: usan las utilidades semánticas que
+   se generan abajo (bg-surface, text-fg-muted, etc.).
+
+   Los valores de superficie llevan alfa a propósito: la página
+   tiene una imagen de fondo detrás y las tarjetas se ven a
+   través de ella, con backdrop-blur donde hace falta.
+   ─────────────────────────────────────────────────────────── */
+:root {
+  --surface:          #eef2f7;
+  --surface-raised:   rgb(255 255 255 / 0.82);
+  --surface-sunken:   rgb(255 255 255 / 0.62);
+  --fg:               #0f172a;
+  --fg-muted:         #334155;
+  --fg-subtle:        #64748b;
+  --border-subtle:    rgb(15 23 42 / 0.14);
+
+  /* Velo sobre la imagen de fondo: mantiene legible el texto
+     sin tapar el arte. */
+  --scrim: linear-gradient(
+    180deg,
+    rgb(238 242 247 / 0.62) 0%,
+    rgb(238 242 247 / 0.80) 45%,
+    rgb(226 232 240 / 0.92) 100%
+  );
+}
+
+[data-theme='dark'] {
+  --surface:          #020617;
+  --surface-raised:   rgb(15 23 42 / 0.72);
+  --surface-sunken:   rgb(2 6 23 / 0.55);
+  /* Grises elevados a propósito: sobre la imagen de fondo los
+     gray-500/600 originales se perdían por completo. */
+  --fg:               #f8fafc;
+  --fg-muted:         #d3dce8;
+  --fg-subtle:        #a3b1c4;
+  --border-subtle:    rgb(148 163 184 / 0.22);
+
+  --scrim: linear-gradient(
+    180deg,
+    rgb(2 6 23 / 0.58) 0%,
+    rgb(2 6 23 / 0.74) 45%,
+    rgb(2 6 23 / 0.88) 100%
+  );
+}
+
+/* Expone los tokens como utilidades de Tailwind. `inline` hace que
+   la utilidad referencie la variable en vez de copiarla, que es lo
+   que permite que el cambio de tema funcione en runtime. */
+@theme inline {
+  --color-surface:        var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-fg:             var(--fg);
+  --color-fg-muted:       var(--fg-muted);
+  --color-fg-subtle:      var(--fg-subtle);
+  --color-border-subtle:  var(--border-subtle);
+}
+
 * { box-sizing: border-box; }
 
 body {
   font-family: 'Nunito', sans-serif;
-  background-color: #030712;
+  background-color: var(--surface);
+  color: var(--fg);
 }
 
 @keyframes fadeIn {
@@ -13,10 +76,23 @@ body {
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* Cross-fade al cambiar de región o de tema. */
+@keyframes backgroundFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .scrollbar-thin::-webkit-scrollbar { height: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 9999px; }
 
 ::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #030712; }
-::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 9999px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 9999px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
