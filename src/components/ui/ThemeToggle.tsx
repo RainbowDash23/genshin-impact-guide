@@ -14,9 +14,9 @@ interface ThemeToggleProps {
 }
 
 const OPTIONS = [
-  { value: 'light',   label: 'Fondo blanco',  Icon: Sun,     title: 'Fondo blanco (Citlali)' },
-  { value: 'system',  label: 'Sistema',       Icon: Monitor, title: 'Seguir el tema del sistema' },
-  { value: 'dark',    label: 'Fondo oscuro',  Icon: Moon,    title: 'Fondo oscuro (imagen de la región)' },
+  { value: 'light', Icon: Sun, title: 'Fondo blanco' },
+  { value: 'system', Icon: Monitor, title: 'Tema del sistema' },
+  { value: 'dark', Icon: Moon, title: 'Fondo oscuro' },
 ] as const;
 
 export function ThemeToggle({ mode, accentColor, onChange }: ThemeToggleProps) {
@@ -27,7 +27,7 @@ export function ThemeToggle({ mode, accentColor, onChange }: ThemeToggleProps) {
       className="flex items-center gap-1 rounded-lg border border-border-subtle
                  bg-surface-sunken p-1 backdrop-blur-sm"
     >
-      {OPTIONS.map(({ value, label, Icon, title }) => {
+      {OPTIONS.map(({ value, Icon, title }) => {
         const isActive = mode === value;
         return (
           <button
@@ -35,7 +35,6 @@ export function ThemeToggle({ mode, accentColor, onChange }: ThemeToggleProps) {
             type="button"
             onClick={() => onChange(value)}
             title={title}
-            aria-label={label}
             aria-pressed={isActive}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold
                        transition-all duration-150"
@@ -44,7 +43,6 @@ export function ThemeToggle({ mode, accentColor, onChange }: ThemeToggleProps) {
               : { color: 'var(--fg-subtle)' }}
           >
             <Icon size={13} />
-            <span className="hidden md:inline">{label}</span>
           </button>
         );
       })}
