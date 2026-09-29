@@ -1,12 +1,11 @@
 // ─────────────────────────────────────────────────────────────
 //  components/layout/Background.tsx
-//  Capa de fondo de la página: imagen + velo de legibilidad.
-//  El tema claro usa una sola imagen (Citlali) para todas las
-//  regiones; el oscuro usa una por región. Se reinicia la
-//  animación con `key` para que el cambio entre fondos se
-//  note como un cross-fade y no como un salto.
+//  Capa de fondo de la página con sistema de doble capa (crossfade)
+//  ultra-fluido y precarga en GPU para eliminar cualquier parpadeo.
 // ─────────────────────────────────────────────────────────────
+import { useEffect, useRef, useState } from 'react';
 import { BACKGROUNDS, LIGHT_BACKGROUND } from '../../assets/index';
+import { isImageLoaded, preloadImage } from '../../lib/backgroundPreloader';
 import type { ResolvedTheme } from '../../types/theme';
 
 interface BackgroundProps {
@@ -14,18 +13,131 @@ interface BackgroundProps {
   theme: ResolvedTheme;
 }
 
+interface Layer {
+  id: number;
+  src: string;
+  opacity: number;
+}
+
 export function Background({ regionId, theme }: BackgroundProps) {
-  const src = theme === 'light' ? LIGHT_BACKGROUND : BACKGROUNDS[regionId] ?? LIGHT_BACKGROUND;
+  const targetSrc = theme === 'light' ? LIGHT_BACKGROUND : BACKGROUNDS[regionId] ?? LIGHT_BACKGROUND;
+
+  const idCounter = useRef(1);
+  const targetSrcRef = useRef(targetSrc);
+  targetSrcRef.current = targetSrc;
+
+  const lastRenderedSrcRef = useRef(targetSrc);
+
+  // Capas de fondo en la pila de renderizado
+  const [layers, setLayers] = useState<Layer[]>(() => {
+    const ready = isImageLoaded(targetSrc);
+    return [
+      {
+        id: 1,
+        src: targetSrc,
+        opacity: ready ? 1 : 0,
+      },
+    ];
+  });
+
+  // Si la primera imagen no estaba lista en caché al montar el componente,
+  // la decodificamos primero y luego hacemos fade-in suave, evitando el parpadeo inicial.
+  useEffect(() => {
+    let active = true;
+    if (!isImageLoaded(targetSrc)) {
+      preloadImage(targetSrc).then(() => {
+        if (!active) return;
+        setLayers(prev =>
+          prev.map(layer =>
+            layer.src === targetSrc ? { ...layer, opacity: 1 } : layer
+          )
+        );
+      });
+    }
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Transición suave de capas al cambiar de región o de tema
+  useEffect(() => {
+    let active = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (targetSrc === lastRenderedSrcRef.current) {
+      return;
+    }
+
+    preloadImage(targetSrc).then(() => {
+      if (!active || targetSrcRef.current !== targetSrc) return;
+
+      lastRenderedSrcRef.current = targetSrc;
+      const newLayerId = ++idCounter.current;
+      const newLayer: Layer = {
+        id: newLayerId,
+        src: targetSrc,
+        opacity: 0,
+      };
+
+      // Colocamos la nueva capa arriba de la anterior con opacidad 0
+      setLayers(prev => {
+        if (prev.length > 0 && prev[prev.length - 1].src === targetSrc) {
+          return prev;
+        }
+        return [...prev, newLayer];
+      });
+
+      // Animamos la opacidad a 1 en el siguiente frame de renderizado del navegador
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!active) return;
+          setLayers(prev =>
+            prev.map(layer =>
+              layer.id === newLayerId ? { ...layer, opacity: 1 } : layer
+            )
+          );
+        });
+      });
+
+      // Cuando la animación finaliza (700ms), removemos capas previas inferiores
+      timer = setTimeout(() => {
+        if (!active) return;
+        setLayers(prev => {
+          const idx = prev.findIndex(layer => layer.id === newLayerId);
+          if (idx <= 0) return prev;
+          return prev.slice(idx);
+        });
+      }, 750);
+    });
+
+    return () => {
+      active = false;
+      if (timer) clearTimeout(timer);
+    };
+  }, [targetSrc]);
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none select-none" aria-hidden="true">
+      {/* Capas de imagen compuestas en GPU para cross-dissolve a 60/120fps */}
+      {layers.map(layer => (
+        <div
+          key={layer.id}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url("${layer.src}")`,
+            opacity: layer.opacity,
+            transition: 'opacity 700ms cubic-bezier(0.25, 1, 0.5, 1)',
+            willChange: 'opacity',
+            transform: 'translateZ(0)',
+          }}
+        />
+      ))}
+
+      {/* Velo del tema: garantiza legibilidad y contraste óptimo */}
       <div
-        key={src}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url("${src}")`, animation: 'backgroundFade .5s ease-out' }}
+        className="absolute inset-0 transition-colors duration-500"
+        style={{ background: 'var(--scrim)' }}
       />
-      {/* Velo del tema: garantiza contraste sin tapar el arte. */}
-      <div className="absolute inset-0" style={{ background: 'var(--scrim)' }} />
     </div>
   );
 }

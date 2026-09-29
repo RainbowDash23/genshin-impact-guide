@@ -5,6 +5,7 @@
 //  Recibe `accents` con el color ya ajustado al tema activo.
 // ─────────────────────────────────────────────────────────────
 import type { Region } from '../../types/quest';
+import { preloadRegionBackground } from '../../lib/backgroundPreloader';
 
 interface RegionNavProps {
   regions: Region[];
@@ -26,6 +27,8 @@ export function RegionNav({ regions, activeId, completedByRegion, accents, onSel
           <button
             key={r.id}
             onClick={() => onSelect(r.id)}
+            onPointerEnter={() => preloadRegionBackground(r.id)}
+            onFocus={() => preloadRegionBackground(r.id)}
             aria-current={isActive ? 'true' : undefined}
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-semibold text-sm
                        whitespace-nowrap border transition-all duration-200 flex-shrink-0 group
