@@ -16,6 +16,7 @@ import { QuestModal } from './components/quest/QuestModal';
 import { useQuestFilter }   from './hooks/useQuestFilter';
 import { useQuestProgress } from './hooks/useQuestProgress';
 import { useTheme }         from './hooks/useTheme';
+import { useProgressivePagination } from './hooks/useProgressivePagination';
 import { readableAccent }   from './lib/color';
 import type { Quest } from './types/quest';
 import './index.css';
@@ -28,6 +29,17 @@ export default function App() {
 
   const region = ALL_REGIONS.find(r => r.id === activeId)!;
   const { search, zone, filtered, setSearch, setZone, reset } = useQuestFilter(region.quests);
+
+  const { visibleCount, hasMore, remainingCount, loadMore, resetPagination } =
+    useProgressivePagination({
+      totalItems: filtered.length,
+      resetDependencies: [activeId, search, zone],
+    });
+
+  const visibleQuests = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
 
   // Acento de cada región ajustado al tema activo. Sobre fondo
   // claro los colores originales no mantienen contraste, así que
@@ -95,6 +107,9 @@ export default function App() {
             <img
               src={region.emblem}
               alt={region.name}
+              width={64}
+              height={64}
+              decoding="async"
               className="w-16 h-16 object-contain flex-shrink-0"
               style={{ filter: `drop-shadow(0 0 12px ${accent}40)` }}
             />
@@ -124,7 +139,10 @@ export default function App() {
                 <Stat value={region.quests.length - regionDone} label="Pendientes" color={accent} />
                 {regionDone > 0 && (
                   <button
-                    onClick={() => resetRegion(region.quests.map(q => q.id))}
+                    onClick={() => {
+                      resetRegion(region.quests.map(q => q.id));
+                      resetPagination();
+                    }}
                     className="ml-auto text-xs text-fg-subtle hover:text-fg transition-colors underline underline-offset-2"
                   >
                     Reiniciar progreso
@@ -141,8 +159,8 @@ export default function App() {
           zone={zone}
           zones={region.zones}
           color={accent}
-          visible={filtered.length}
-          total={region.quests.length}
+          visible={visibleQuests.length}
+          total={filtered.length}
           onSearch={setSearch}
           onZone={setZone}
           onReset={reset}
@@ -150,18 +168,37 @@ export default function App() {
 
         {/* Grid */}
         {filtered.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map(q => (
-              <QuestCard
-                key={q.id}
-                quest={q}
-                color={accent}
-                completed={isCompleted(q.id)}
-                onToggle={toggle}
-                onOpen={setSelected}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {visibleQuests.map(q => (
+                <QuestCard
+                  key={q.id}
+                  quest={q}
+                  color={accent}
+                  completed={isCompleted(q.id)}
+                  onToggle={toggle}
+                  onOpen={setSelected}
+                />
+              ))}
+            </div>
+
+            {hasMore && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  type="button"
+                  onClick={loadMore}
+                  aria-label={`Cargar más misiones (${remainingCount} restantes)`}
+                  className="min-h-[44px] min-w-[44px] px-6 py-3 rounded-xl font-bold text-sm
+                             bg-surface-raised backdrop-blur-sm border border-border-subtle
+                             text-fg hover:border-current transition-all duration-200 shadow-sm
+                             hover:shadow flex items-center justify-center gap-2"
+                  style={{ borderColor: accent + '50' }}
+                >
+                  Cargar más misiones ({remainingCount} restantes)
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-20">
             <p className="text-fg-muted text-lg font-bold">Sin resultados</p>

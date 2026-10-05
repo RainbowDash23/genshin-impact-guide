@@ -38,7 +38,7 @@ export function FilterBar({ search, zone, zones, color, visible, total, onSearch
         </div>
         <div className="flex items-center gap-2 text-sm text-fg-muted bg-surface-raised backdrop-blur-sm
                         border border-border-subtle px-3 py-2.5 rounded-lg whitespace-nowrap">
-          {visible} / {total}
+          {visible} de {total}
         </div>
         {hasFilter && (
           <button

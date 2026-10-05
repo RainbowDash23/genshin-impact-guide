@@ -13,40 +13,40 @@
    través de ella, con backdrop-blur donde hace falta.
    ─────────────────────────────────────────────────────────── */
 :root {
-  --surface:          #eef2f7;
-  --surface-raised:   rgb(255 255 255 / 0.82);
-  --surface-sunken:   rgb(255 255 255 / 0.62);
-  --fg:               #0f172a;
-  --fg-muted:         #334155;
-  --fg-subtle:        #64748b;
-  --border-subtle:    rgb(15 23 42 / 0.14);
+  --surface:          #f4efe6;
+  --surface-raised:   rgb(255 252 245 / 0.85);
+  --surface-sunken:   rgb(240 233 220 / 0.65);
+  --fg:               #1c1917;
+  --fg-muted:         #44403c;
+  --fg-subtle:        #78716c;
+  --border-subtle:    rgb(28 25 23 / 0.14);
 
   /* Velo sobre la imagen de fondo: mantiene legible el texto
      sin tapar el arte. */
   --scrim: linear-gradient(
     180deg,
-    rgb(238 242 247 / 0.62) 0%,
-    rgb(238 242 247 / 0.80) 45%,
-    rgb(226 232 240 / 0.92) 100%
+    rgb(244 239 230 / 0.65) 0%,
+    rgb(244 239 230 / 0.82) 45%,
+    rgb(235 228 215 / 0.94) 100%
   );
 }
 
 [data-theme='dark'] {
-  --surface:          #020617;
-  --surface-raised:   rgb(15 23 42 / 0.72);
-  --surface-sunken:   rgb(2 6 23 / 0.55);
+  --surface:          #0c0f17;
+  --surface-raised:   rgb(20 25 38 / 0.78);
+  --surface-sunken:   rgb(10 14 24 / 0.60);
   /* Grises elevados a propósito: sobre la imagen de fondo los
      gray-500/600 originales se perdían por completo. */
-  --fg:               #f8fafc;
-  --fg-muted:         #d3dce8;
-  --fg-subtle:        #a3b1c4;
-  --border-subtle:    rgb(148 163 184 / 0.22);
+  --fg:               #f5f5f7;
+  --fg-muted:         #d0d7e3;
+  --fg-subtle:        #94a3b8;
+  --border-subtle:    rgb(180 195 220 / 0.18);
 
   --scrim: linear-gradient(
     180deg,
-    rgb(2 6 23 / 0.58) 0%,
-    rgb(2 6 23 / 0.74) 45%,
-    rgb(2 6 23 / 0.88) 100%
+    rgb(12 15 23 / 0.62) 0%,
+    rgb(12 15 23 / 0.78) 45%,
+    rgb(8 10 18 / 0.90) 100%
   );
 }
 

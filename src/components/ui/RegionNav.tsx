@@ -41,7 +41,11 @@ export function RegionNav({ regions, activeId, completedByRegion, accents, onSel
             <img
               src={r.emblem}
               alt={r.name}
-              className="w-5 h-5 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+              width={20}
+              height={20}
+              loading="lazy"
+              decoding="async"
+              className="w-5 h-5 object-contain flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity"
               style={isActive ? { filter: `drop-shadow(0 0 4px ${accent}60)` } : {}}
             />
             <span>{r.name}</span>

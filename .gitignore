@@ -37,6 +37,9 @@ lerna-debug.log*
 *.sln
 *.sw?
 *AGENTS.md
+*MEMORY.md
+specs
+docs
 # OS
 .DS_Store
 Thumbs.db
