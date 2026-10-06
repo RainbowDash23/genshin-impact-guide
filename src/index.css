@@ -1,58 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 /* ───────────────────────────────────────────────────────────
-   Tokens de tema
-   Los colores viven como variables CSS en :root y se
-   sobreescriben en [data-theme='dark']. Los componentes nunca
-   nombran un gris directo: usan las utilidades semánticas que
-   se generan abajo (bg-surface, text-fg-muted, etc.).
+   Tokens de tema de alta gama (Teyvat Edition)
+   Inspiración:
+   - Modo Claro: Pergamino de Aventurero, tintas cálidas,
+     marfil satinado y bordes finos.
+   - Modo Oscuro: Abismo y Firmamento Estelar, azul cósmico,
+     cristal ahumado y destellos celestiales.
 
-   Los valores de superficie llevan alfa a propósito: la página
-   tiene una imagen de fondo detrás y las tarjetas se ven a
-   través de ella, con backdrop-blur donde hace falta.
+   Todos los componentes consumen las utilidades semánticas
+   (bg-surface, bg-surface-raised, text-fg, border-border-subtle)
+   sin nombrar grays directos para respetar el motor de temas.
    ─────────────────────────────────────────────────────────── */
 :root {
-  --surface:          #f4efe6;
-  --surface-raised:   rgb(255 252 245 / 0.85);
-  --surface-sunken:   rgb(240 233 220 / 0.65);
-  --fg:               #1c1917;
-  --fg-muted:         #44403c;
-  --fg-subtle:        #78716c;
-  --border-subtle:    rgb(28 25 23 / 0.14);
+  --surface:          #f7f4ed;
+  --surface-raised:   rgb(255 253 248 / 0.88);
+  --surface-sunken:   rgb(243 238 228 / 0.72);
+  --fg:               #1a1715;
+  --fg-muted:         #3f3a36;
+  --fg-subtle:        #6e665f;
+  --border-subtle:    rgb(26 23 21 / 0.13);
 
-  /* Velo sobre la imagen de fondo: mantiene legible el texto
-     sin tapar el arte. */
+  /* Velo suave sobre la imagen de fondo para contraste editorial óptimo */
   --scrim: linear-gradient(
     180deg,
-    rgb(244 239 230 / 0.65) 0%,
-    rgb(244 239 230 / 0.82) 45%,
-    rgb(235 228 215 / 0.94) 100%
+    rgb(247 244 237 / 0.70) 0%,
+    rgb(247 244 237 / 0.84) 38%,
+    rgb(238 232 220 / 0.96) 100%
   );
+
+  /* Resplandor ambiental de cristal */
+  --glass-reflection: linear-gradient(135deg, rgb(255 255 255 / 0.5) 0%, rgb(255 255 255 / 0) 100%);
 }
 
 [data-theme='dark'] {
-  --surface:          #0c0f17;
-  --surface-raised:   rgb(20 25 38 / 0.78);
-  --surface-sunken:   rgb(10 14 24 / 0.60);
-  /* Grises elevados a propósito: sobre la imagen de fondo los
-     gray-500/600 originales se perdían por completo. */
-  --fg:               #f5f5f7;
-  --fg-muted:         #d0d7e3;
+  --surface:          #090c14;
+  --surface-raised:   rgb(15 20 34 / 0.82);
+  --surface-sunken:   rgb(8 11 19 / 0.65);
+  --fg:               #f8fafc;
+  --fg-muted:         #cbd5e1;
   --fg-subtle:        #94a3b8;
-  --border-subtle:    rgb(180 195 220 / 0.18);
+  --border-subtle:    rgb(148 163 184 / 0.16);
 
+  /* Velo cósmico profundo */
   --scrim: linear-gradient(
     180deg,
-    rgb(12 15 23 / 0.62) 0%,
-    rgb(12 15 23 / 0.78) 45%,
-    rgb(8 10 18 / 0.90) 100%
+    rgb(9 12 20 / 0.68) 0%,
+    rgb(9 12 20 / 0.82) 38%,
+    rgb(5 7 12 / 0.94) 100%
   );
+
+  --glass-reflection: linear-gradient(135deg, rgb(255 255 255 / 0.08) 0%, rgb(255 255 255 / 0) 100%);
 }
 
-/* Expone los tokens como utilidades de Tailwind. `inline` hace que
-   la utilidad referencie la variable en vez de copiarla, que es lo
-   que permite que el cambio de tema funcione en runtime. */
+/* Exposición directa de tokens a Tailwind v4 mediante @theme inline */
 @theme inline {
   --color-surface:        var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -61,38 +63,121 @@
   --color-fg-muted:       var(--fg-muted);
   --color-fg-subtle:      var(--fg-subtle);
   --color-border-subtle:  var(--border-subtle);
+  --font-serif:           'Nunito', sans-serif;
+  --font-sans:            'Nunito', sans-serif;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: 'Nunito', sans-serif;
   background-color: var(--surface);
   color: var(--fg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.97) translateY(6px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+/* Tipografía de títulos hero y heráldica */
+.font-display {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
-/* Cross-fade al cambiar de región o de tema. */
-@keyframes backgroundFade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+/* Animaciones suaves */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.scrollbar-thin::-webkit-scrollbar { height: 4px; }
-.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 9999px; }
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 9999px; }
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* Efectos de vidrio de alta fidelidad */
+.glass-panel {
+  background-color: var(--surface-raised);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-sunken {
+  background-color: var(--surface-sunken);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Barra de desplazamiento elegante */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-subtle);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Respeto estricto a accesibilidad y movimiento reducido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────
 import { useEffect, useRef, useState } from 'react';
 import { BACKGROUNDS, LIGHT_BACKGROUND } from '../../assets/index';
-import { isImageLoaded, preloadImage } from '../../lib/backgroundPreloader';
+import { preloadImage } from '../../lib/backgroundPreloader';
 import type { ResolvedTheme } from '../../types/theme';
 
 interface BackgroundProps {
@@ -28,36 +28,15 @@ export function Background({ regionId, theme }: BackgroundProps) {
 
   const lastRenderedSrcRef = useRef(targetSrc);
 
-  // Capas de fondo en la pila de renderizado
-  const [layers, setLayers] = useState<Layer[]>(() => {
-    const ready = isImageLoaded(targetSrc);
-    return [
-      {
-        id: 1,
-        src: targetSrc,
-        opacity: ready ? 1 : 0,
-      },
-    ];
-  });
-
-  // Si la primera imagen no estaba lista en caché al montar el componente,
-  // la decodificamos primero y luego hacemos fade-in suave, evitando el parpadeo inicial.
-  useEffect(() => {
-    let active = true;
-    if (!isImageLoaded(targetSrc)) {
-      preloadImage(targetSrc).then(() => {
-        if (!active) return;
-        setLayers(prev =>
-          prev.map(layer =>
-            layer.src === targetSrc ? { ...layer, opacity: 1 } : layer
-          )
-        );
-      });
-    }
-    return () => {
-      active = false;
-    };
-  }, []);
+  // La capa inicial siempre comienza con opacidad 1 para asegurar
+  // que el fondo de la región inicial (Mondstadt) se muestre de inmediato al entrar
+  const [layers, setLayers] = useState<Layer[]>(() => [
+    {
+      id: 1,
+      src: targetSrc,
+      opacity: 1,
+    },
+  ]);
 
   // Transición suave de capas al cambiar de región o de tema
   useEffect(() => {
@@ -65,6 +44,10 @@ export function Background({ regionId, theme }: BackgroundProps) {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     if (targetSrc === lastRenderedSrcRef.current) {
+      // Garantiza que la capa actual esté siempre en opacidad 1
+      setLayers(prev =>
+        prev.map(l => (l.src === targetSrc && l.opacity < 1 ? { ...l, opacity: 1 } : l))
+      );
       return;
     }
 
