@@ -5,7 +5,7 @@
 //  y controles temáticos.
 // ─────────────────────────────────────────────────────────────
 import type { ReactNode } from 'react';
-import { Compass, Sparkles } from 'lucide-react';
+import { Compass } from 'lucide-react';
 import { AnimatedCounter } from '../ui/AnimatedCounter';
 
 interface HeaderProps {
