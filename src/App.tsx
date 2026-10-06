@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-//  App.tsx — Componente raíz rediseñado (Nivel Agencia Top)
+//  App.tsx — Componente raíz
 //  Orquesta la navegación entre las siete naciones de Teyvat,
 //  el catálogo de misiones, filtros de alta precisión,
 //  persistencia local en tiempo real y transiciones cinematográficas.
@@ -114,7 +114,7 @@ export default function App() {
 
       {/* Contenedor principal con amplio espacio en blanco */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 flex-1">
-        
+
         {/* Cabecera Hero de estilo agencia con hueco reservado para vídeo */}
         <HeroSection
           completedCount={globalStats.done}

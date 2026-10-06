@@ -39,10 +39,7 @@ export function Header({ completedCount, totalCount, accentColor, children }: He
                 className="transition-transform duration-500 group-hover:rotate-45"
                 style={{ color: accentColor }}
               />
-              <span
-                className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: accentColor }}
-              />
+
             </div>
 
             <div className="min-w-0 flex flex-col justify-center">
@@ -50,17 +47,7 @@ export function Header({ completedCount, totalCount, accentColor, children }: He
                 <span className="font-display font-bold text-fg text-sm sm:text-base lg:text-lg tracking-tight sm:tracking-wider truncate">
                   GENSHIN QUEST GUIDE
                 </span>
-                <span
-                  className="hidden md:inline-flex items-center gap-1 text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full border"
-                  style={{
-                    backgroundColor: accentColor + '14',
-                    color: accentColor,
-                    borderColor: accentColor + '38',
-                  }}
-                >
-                  <Sparkles size={10} />
-                  Teyvat Archive
-                </span>
+
               </div>
               <span className="text-fg-subtle text-xs tracking-wide hidden sm:block">
                 Compendio de Misiones de Mundo

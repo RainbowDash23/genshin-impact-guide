@@ -45,17 +45,16 @@ export function RegionNav({
               aria-current={isActive ? 'true' : undefined}
               className={`group relative flex items-center gap-3 px-4 sm:px-5 py-3 rounded-2xl border text-sm
                          transition-all duration-300 flex-shrink-0 cursor-pointer text-left
-                         ${
-                           isActive
-                             ? 'shadow-lg scale-[1.02] bg-surface-raised backdrop-blur-md'
-                             : 'bg-surface-raised/60 hover:bg-surface-raised/90 border-border-subtle hover:border-border-subtle/80 hover:-translate-y-0.5'
-                         }`}
+                         ${isActive
+                  ? 'shadow-lg scale-[1.02] bg-surface-raised backdrop-blur-md'
+                  : 'bg-surface-raised/60 hover:bg-surface-raised/90 border-border-subtle hover:border-border-subtle/80 hover:-translate-y-0.5'
+                }`}
               style={
                 isActive
                   ? {
-                      borderColor: accent + '80',
-                      boxShadow: `0 8px 24px -6px ${accent}33`,
-                    }
+                    borderColor: accent + '80',
+                    boxShadow: `0 8px 24px -6px ${accent}33`,
+                  }
                   : undefined
               }
             >
@@ -77,9 +76,9 @@ export function RegionNav({
                   style={
                     isActive
                       ? {
-                          filter: `drop-shadow(0 0 8px ${accent}80)`,
-                          transform: 'scale(1.08)',
-                        }
+                        filter: `drop-shadow(0 0 8px ${accent}80)`,
+                        transform: 'scale(1.08)',
+                      }
                       : { opacity: 0.85 }
                   }
                 />
@@ -89,18 +88,12 @@ export function RegionNav({
               <div className="flex flex-col min-w-0 pr-1">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className={`font-bold tracking-tight text-sm transition-colors ${
-                      isActive ? 'text-fg' : 'text-fg-muted group-hover:text-fg'
-                    }`}
+                    className={`font-bold tracking-tight text-sm transition-colors ${isActive ? 'text-fg' : 'text-fg-muted group-hover:text-fg'
+                      }`}
                   >
                     {r.name}
                   </span>
-                  {isActive && (
-                    <span
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ backgroundColor: accent }}
-                    />
-                  )}
+
                 </div>
 
                 <div className="flex items-center gap-1.5 text-[11px] text-fg-subtle">

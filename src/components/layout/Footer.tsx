@@ -3,7 +3,7 @@
 //  Pie de página de nivel agencia top con créditos de HoYoverse,
 //  descargo de responsabilidad oficial y estado del almacenamiento.
 // ─────────────────────────────────────────────────────────────
-import { Compass } from 'lucide-react';
+
 
 export function Footer() {
   return (
@@ -12,9 +12,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-border-subtle">
 
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-surface-sunken flex items-center justify-center border border-border-subtle">
-              <Compass size={18} className="text-fg-subtle" />
-            </div>
+
             <div>
               <span className="font-display font-bold text-fg tracking-wider block">
                 GENSHIN QUEST GUIDE
